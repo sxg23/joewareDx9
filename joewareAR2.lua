@@ -23,11 +23,7 @@ local Tab4 = Window:AddTab("misc")
 --/ Groupboxes
 local Groupbox4 = Tab1:AddLeftGroupbox("aimbot")
 
-local aimbot_toggle = Groupbox4:AddToggle({Default = false, Text = "aimbot"}):OnChanged(function(value)
-    if value then Lib:Notify("aimbot enabled", 1) else Lib:Notify("aimbot disabled", 1) end
-end)
-
-local aimbot_range = Groupbox4:AddSlider({Default = 500, Text = "aimbot range", Min = 0, Max = 3000}):OnChanged(function(value)
+local aimbot_range = Groupbox4:AddSlider({Default = 2000, Text = "aimbot range", Min = 0, Max = 3000}):OnChanged(function(value)
     if value then dx9.SetAimbotValue("range", value) end
 end)
 
@@ -35,27 +31,23 @@ local aimbot_fov = Groupbox4:AddSlider({Default = 120, Text = "fov size", Min = 
     if value then dx9.SetAimbotValue("fov", value) end
 end)
 
-local aimbot_smoothness = Groupbox4:AddSlider({Default = 120, Text = "smoothness", Min = 0, Max = 300}):OnChanged(function(value)
-    if value then dx9.SetAimbotValue("sensitivity", value) end
-end)
-
 -- Player ESP Tab
 
 -- Item ESP Tab
 local Groupbox1 = Tab2:AddLeftGroupbox("vehicle esp")
-local Groupbox2 = Tab2:AddRightGroupbox("corpse esp") 
+local Groupbox2 = Tab2:AddRightGroupbox("player esp") 
 
 --// Spawned Items ESP
 local vehicle_esp = Groupbox1:AddToggle({Default = false, Text = "vehicle esp"}):OnChanged(function(value)
     if value then Lib:Notify("Vehicle ESP Enabled", 1) else Lib:Notify("Vehicle ESP Disabled", 1) end
 end)
 
-local corpse_esp = Groupbox2:AddToggle({Default = false, Text = "corpse esp"}):OnChanged(function(value)
-    if value then Lib:Notify("Corpse ESP Enabled", 1) else Lib:Notify("Corpse ESP Disabled", 1) end
+local held_esp = Groupbox2:AddToggle({Default = true, Text = "held item esp"}):OnChanged(function(value)
+    if value then Lib:Notify("held item ESP Enabled", 1) else Lib:Notify("held item ESP Disabled", 1) end
 end)
 
-local held_esp = Groupbox2:AddToggle({Default = false, Text = "held item esp"}):OnChanged(function(value)
-    if value then Lib:Notify("held item ESP Enabled", 1) else Lib:Notify("held item ESP Disabled", 1) end
+local corpse_esp = Groupbox2:AddToggle({Default = false, Text = "corpse esp"}):OnChanged(function(value)
+    if value then Lib:Notify("Corpse ESP Enabled", 1) else Lib:Notify("Corpse ESP Disabled", 1) end
 end)
 
 local vehicle_dist_limit = Groupbox1:AddSlider({Default = 1000, Text = "vehicle esp range", Min = 0, Max = 4000}).Value
@@ -64,7 +56,7 @@ local corpse_dist_limit = Groupbox2:AddSlider({Default = 1000, Text = "corpse es
 
 local Groupbox3 = Tab3:AddLeftGroupbox("zombie esp") 
 
-local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp"}):OnChanged(function(value)
+local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp [fps destroyer]"}):OnChanged(function(value)
     if value then Lib:Notify("Zombie ESP Enabled", 1) else Lib:Notify("Zombie ESP Disabled", 1) end
 end)
 
@@ -144,25 +136,17 @@ for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Zombies")) do
             local pos = dx9.GetPosition(root)
             local dist = math.floor(DistFromPlr(root) / 3.5714285714286)
             local name = dx9.GetName(p)
+            local ignore = (string.match(name, "^(%S+)") or ""):lower()
             
             if dist < zombie_dist_limit then 
                 local wts = dx9.WorldToScreen({pos.x, pos.y, pos.z})
-                
-                local zombiecorpses = { --// add zombies you wanna see exclusively here
-                    ["Male Judge"] = "Male Judge",
-                    ["Infected1"] = "Infected Admiral",
-                    ["Infected2"] = "Infected NATO Pilot",
-                    ["Infected3"] = "Infected NATO Operator",
-                    ["soviet zombie [gun]"] = "Infected Soviet Officer",
-                    ["Infected4"] = "Infected Soldier"
-                }
 
                 if dx9.GetName(v) == "HumanoidRootPart" and zombie_esp.Value then
                     name = dx9.GetName(p)
                     color = {255, 0, 0}
                 end
 
-                if wts.x > 0 and wts.y > 0 and dx9.GetName(v) == "HumanoidRootPart" and zombie_esp.Value then
+                if wts.x > 0 and wts.y > 0 and dx9.GetName(v) == "HumanoidRootPart" and ignore == "unique" and zombie_esp.Value then
                     dx9.DrawCircle({wts.x, wts.y}, {0,0,0}, 3)
                     dx9.DrawCircle({wts.x, wts.y}, color, 1)
                     dx9.DrawString({wts.x + 5, wts.y - 13}, color, name.."\n["..dist.."m]")
