@@ -12,7 +12,7 @@ local Looktarget = dx9.GetTarget()
 local Lib = loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLibUI/main/main.lua"))()
 
 --// Making UI
-local Window = Lib:CreateWindow({Title = "joeware | AR2", Size = {500,500}, Resizable = true, ToggleKey = "[F2]", FooterMouseCoords = true })
+local Window = Lib:CreateWindow({Title = "joeware | AR2", Size = {500,500}, Resizable = true, ToggleKey = "[F2]", AccentColor = {100, 55, 255}, OutlineColor = {100, 100, 255}, FooterRGB = false, FooterMouseCoords = false })
 
 --/ Tabs
 local Tab1 = Window:AddTab("aimbot")
@@ -181,6 +181,7 @@ for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Characters")) d
 end
 
 --// FirstRun
-if Lib.FirstRun then 
-    dx9.SetAimbotValue("range", 2000)
+if Lib.FirstRun then
+    Tab2:Focus()
+    --dx9.SetAimbotValue("range", 2000)
 end
