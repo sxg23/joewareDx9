@@ -21,6 +21,9 @@ local Tab3 = Window:AddTab("zombie esp")
 local Tab4 = Window:AddTab("misc")
 
 --/ Groupboxes
+local Groupbox1 = Tab2:AddLeftGroupbox("vehicle esp")
+local Groupbox2 = Tab2:AddRightGroupbox("player esp")
+local Groupbox3 = Tab3:AddLeftGroupbox("zombie esp") 
 local Groupbox4 = Tab1:AddLeftGroupbox("aimbot")
 
 local aimbot_range = Groupbox4:AddSlider({Default = 2000, Text = "aimbot range", Min = 0, Max = 3000}):OnChanged(function(value)
@@ -31,16 +34,12 @@ local aimbot_fov = Groupbox4:AddSlider({Default = 120, Text = "fov size", Min = 
     if value then dx9.SetAimbotValue("fov", value) end
 end)
 
--- Player ESP Tab
-
--- Item ESP Tab
-local Groupbox1 = Tab2:AddLeftGroupbox("vehicle esp")
-local Groupbox2 = Tab2:AddRightGroupbox("player esp") 
-
---// Spawned Items ESP
+--// Player ESP Tab
 local vehicle_esp = Groupbox1:AddToggle({Default = false, Text = "vehicle esp"}):OnChanged(function(value)
     if value then Lib:Notify("Vehicle ESP Enabled", 1) else Lib:Notify("Vehicle ESP Disabled", 1) end
 end)
+
+local vehicle_dist_limit = Groupbox1:AddSlider({Default = 1000, Text = "vehicle esp range", Min = 0, Max = 4000}).Value
 
 local held_esp = Groupbox2:AddToggle({Default = true, Text = "held item esp"}):OnChanged(function(value)
     if value then Lib:Notify("held item ESP Enabled", 1) else Lib:Notify("held item ESP Disabled", 1) end
@@ -50,15 +49,15 @@ local corpse_esp = Groupbox2:AddToggle({Default = false, Text = "corpse esp"}):O
     if value then Lib:Notify("Corpse ESP Enabled", 1) else Lib:Notify("Corpse ESP Disabled", 1) end
 end)
 
-local vehicle_dist_limit = Groupbox1:AddSlider({Default = 1000, Text = "vehicle esp range", Min = 0, Max = 4000}).Value
-
 local corpse_dist_limit = Groupbox2:AddSlider({Default = 1000, Text = "corpse esp range", Min = 0, Max = 4000}).Value
 
-local Groupbox3 = Tab3:AddLeftGroupbox("zombie esp") 
+--// Zombie ESP Tab
 
-local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp [fps destroyer]"}):OnChanged(function(value)
+local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp"}):OnChanged(function(value)
     if value then Lib:Notify("Zombie ESP Enabled", 1) else Lib:Notify("Zombie ESP Disabled", 1) end
 end)
+
+zombie_esp:AddTooltip("fps destroyer")
 
 local zombie_dist_limit = Groupbox3:AddSlider({Default = 100, Text = "zombie esp range", Min = 0, Max = 175}).Value
 
@@ -183,5 +182,4 @@ end
 --// FirstRun
 if Lib.FirstRun then
     Tab2:Focus()
-    --dx9.SetAimbotValue("range", 2000)
 end
