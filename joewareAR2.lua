@@ -1,4 +1,5 @@
 local Workspace = dx9.FindFirstChildOfClass(dx9.GetDatamodel(), "Workspace")
+local Map = dx9.FindFirstChild(Workspace, "Map")
 local Corpses = dx9.FindFirstChild(Workspace, "Corpses")
 local Characters = dx9.FindFirstChild(Workspace, "Characters")
 local Vehicles = dx9.FindFirstChild(Workspace, "Vehicles")
@@ -60,6 +61,10 @@ local corpse_dist_limit = Groupbox2:AddSlider({Default = 1000, Text = "corpse es
 
 local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp"}):OnChanged(function(value)
     if value then Lib:Notify("Zombie ESP Enabled", 1) else Lib:Notify("Zombie ESP Disabled", 1) end
+end)
+
+local random_event_esp = Groupbox3:AddToggle({Default = false, Text = "random event esp"}):OnChanged(function(value)
+    if value then Lib:Notify("random event esp enabled", 1) else Lib:Notify("random event esp disabled", 1) end
 end)
 
 zombie_esp:AddTooltip("fps destroyer")
@@ -190,6 +195,34 @@ for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Characters")) d
                             local itemName = dx9.GetName(item) or "Unknown"
                             local color = {0, 255, 0}
                             dx9.DrawString({wts.x, wts.y}, color, "* " ..itemName.. " *")
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+--// Event ESP
+for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Map, "Elements")) do
+    if random_event_esp.Value then
+        local crashNames = {"SeahawkCrashsite01", "SpecialForcesCrash01", "RandomCrashCessna01", "CrashPrisonBus01"}
+        for _, cname in next, crashNames do
+            local crash = dx9.FindFirstChild(p, cname)
+            if crash then
+                local root = dx9.FindFirstChild(crash, "Base")
+                if root then
+                    local pos = dx9.GetPosition(root)
+                    local dist = math.floor(DistFromPlr(root) / 3.5714285714286)
+                    local name = dx9.GetName(p)
+
+                    if dist < 10000 then 
+                        local wts = dx9.WorldToScreen({pos.x, pos.y, pos.z})
+                        if wts and wts.x > 0 and wts.y > 0 then
+                            local color = {255, 255, 0}
+                            dx9.DrawCircle({wts.x, wts.y}, {0,0,0}, 3)
+                            dx9.DrawCircle({wts.x, wts.y}, color, 1)
+                            dx9.DrawString({wts.x + 5, wts.y - 13}, color, name.."\n["..dist.."m]")
                         end
                     end
                 end
