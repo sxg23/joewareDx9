@@ -15,16 +15,21 @@ local Lib = loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLibUI/
 local Window = Lib:CreateWindow({Title = "joeware | AR2", Size = {500,500}, Resizable = true, ToggleKey = "[F2]", AccentColor = {100, 55, 255}, OutlineColor = {100, 100, 255}, FooterRGB = false, FooterMouseCoords = false })
 
 --/ Tabs
-local Tab1 = Window:AddTab("aimbot")
-local Tab2 = Window:AddTab("player esp")
-local Tab3 = Window:AddTab("zombie esp")
-local Tab4 = Window:AddTab("misc")
+local Tab1 = Window:AddTab("player esp")
+local Tab2 = Window:AddTab("zombie esp")
+local Tab3 = Window:AddTab("misc")
+
+--// FirstRun
+if Lib.FirstRun then
+    Tab1:Focus()
+end
 
 --/ Groupboxes
-local Groupbox1 = Tab2:AddLeftGroupbox("vehicle esp")
-local Groupbox2 = Tab2:AddRightGroupbox("player esp")
-local Groupbox3 = Tab3:AddLeftGroupbox("zombie esp") 
-local Groupbox4 = Tab1:AddLeftGroupbox("aimbot")
+local Groupbox1 = Tab1:AddLeftGroupbox("vehicle esp")
+local Groupbox2 = Tab1:AddRightGroupbox("player esp")
+local Groupbox3 = Tab2:AddLeftGroupbox("zombie esp") 
+local Groupbox4 = Tab3:AddLeftGroupbox("aimbot settings")
+local Groupbox5 = Tab3:AddRightGroupbox("server info")
 
 local aimbot_range = Groupbox4:AddSlider({Default = 2000, Text = "aimbot range", Min = 0, Max = 3000}):OnChanged(function(value)
     if value then dx9.SetAimbotValue("range", value) end
@@ -60,6 +65,20 @@ end)
 zombie_esp:AddTooltip("fps destroyer")
 
 local zombie_dist_limit = Groupbox3:AddSlider({Default = 100, Text = "zombie esp range", Min = 0, Max = 175}).Value
+
+--// Misc Tab
+
+local function GetCharacterCount()
+    local chars = dx9.FindFirstChild(Workspace, "Characters") or Characters
+    if not chars then return 0 end
+    local count = 0
+    for _, _ in next, dx9.GetChildren(chars) do
+        count = count + 1
+    end
+    return count
+end
+
+Groupbox5:AddLabel("players spawned: "..GetCharacterCount().."", {255,255,255})
 
 --// Funcs
 function DistFromPlr(v)
@@ -177,9 +196,4 @@ for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Characters")) d
             end
         end
     end
-end
-
---// FirstRun
-if Lib.FirstRun then
-    Tab2:Focus()
 end
