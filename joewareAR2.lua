@@ -16,9 +16,8 @@ local Lib = loadstring(dx9.Get("https://raw.githubusercontent.com/soupg/DXLibUI/
 local Window = Lib:CreateWindow({Title = "joeware | AR2", Size = {500,500}, Resizable = true, ToggleKey = "[F2]", AccentColor = {100, 55, 255}, OutlineColor = {100, 100, 255}, FooterRGB = false, FooterMouseCoords = false })
 
 --/ Tabs
-local Tab1 = Window:AddTab("player esp")
-local Tab2 = Window:AddTab("zombie esp")
-local Tab3 = Window:AddTab("misc")
+local Tab1 = Window:AddTab("esp")
+local Tab2 = Window:AddTab("misc")
 
 --// FirstRun
 if Lib.FirstRun then
@@ -26,11 +25,11 @@ if Lib.FirstRun then
 end
 
 --/ Groupboxes
-local Groupbox1 = Tab1:AddLeftGroupbox("vehicle esp")
+local Groupbox1 = Tab1:AddLeftGroupbox("world esp")
 local Groupbox2 = Tab1:AddRightGroupbox("player esp")
-local Groupbox3 = Tab2:AddLeftGroupbox("zombie esp") 
-local Groupbox4 = Tab3:AddLeftGroupbox("aimbot settings")
-local Groupbox5 = Tab3:AddRightGroupbox("server info")
+local Groupbox3 = Tab1:AddLeftGroupbox("zombie esp") 
+local Groupbox4 = Tab2:AddLeftGroupbox("aimbot settings")
+local Groupbox5 = Tab2:AddRightGroupbox("server info")
 
 local aimbot_range = Groupbox4:AddSlider({Default = 2000, Text = "aimbot range", Min = 0, Max = 3000}):OnChanged(function(value)
     if value then dx9.SetAimbotValue("range", value) end
@@ -63,7 +62,7 @@ local zombie_esp = Groupbox3:AddToggle({Default = false, Text = "zombie esp"}):O
     if value then Lib:Notify("Zombie ESP Enabled", 1) else Lib:Notify("Zombie ESP Disabled", 1) end
 end)
 
-local random_event_esp = Groupbox3:AddToggle({Default = false, Text = "random event esp"}):OnChanged(function(value)
+local random_event_esp = Groupbox1:AddToggle({Default = false, Text = "random event esp"}):OnChanged(function(value)
     if value then Lib:Notify("random event esp enabled", 1) else Lib:Notify("random event esp disabled", 1) end
 end)
 
