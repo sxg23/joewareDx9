@@ -150,29 +150,44 @@ for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Corpses")) do
 end
 
 --// Zombie Esp
-for _, p in next, dx9.GetChildren(dx9.FindFirstChild(Workspace, "Zombies")) do
+local CachedZombies = {}
+local function BuildZombieCache()
+    CachedZombies = {}
+    local zombiesContainer = Zombies or dx9.FindFirstChild(Workspace, "Zombies")
+    if not zombiesContainer then return end
+    for _, p in next, dx9.GetChildren(zombiesContainer) do
+        if dx9.GetType(p) == "Model" then
+            local name = dx9.GetName(p) or ""
+            local ignore = name:lower() 
+            if ignore:sub(1,6) == "unique" then
+                local root = dx9.FindFirstChild(p, "HumanoidRootPart")
+                if root then
+                    CachedZombies[#CachedZombies + 1] = { model = p, root = root, name = name }
+                end
+            end
+        end
+    end
+end
 
+BuildZombieCache()
+
+for _, z in next, CachedZombies do
     if zombie_esp.Value then
-        for _, v in next, dx9.GetChildren(p) do
-            local root = dx9.FindFirstChild(p, "HumanoidRootPart")
-            local pos = dx9.GetPosition(root)
-            local dist = math.floor(DistFromPlr(root) / 3.5714285714286)
-            local name = dx9.GetName(p)
-            local ignore = (string.match(name, "^(%S+)") or ""):lower()
-            
-            if dist < zombie_dist_limit then 
-                local wts = dx9.WorldToScreen({pos.x, pos.y, pos.z})
+        local root = z.root
 
-                if dx9.GetName(v) == "HumanoidRootPart" and zombie_esp.Value then
-                    name = dx9.GetName(p)
-                    color = {255, 0, 0}
-                end
+        local pos = dx9.GetPosition(root)
 
-                if wts.x > 0 and wts.y > 0 and dx9.GetName(v) == "HumanoidRootPart" and ignore == "unique" and zombie_esp.Value then
-                    dx9.DrawCircle({wts.x, wts.y}, {0,0,0}, 3)
-                    dx9.DrawCircle({wts.x, wts.y}, color, 1)
-                    dx9.DrawString({wts.x + 5, wts.y - 13}, color, name.."\n["..dist.."m]")
-                end
+        local dist = math.floor(DistFromPlr(root) / 3.5714285714286)
+        local name = z.name or dx9.GetName(z.model)
+
+        if dist < zombie_dist_limit then 
+            local wts = dx9.WorldToScreen({pos.x, pos.y, pos.z})
+            local color = {255, 0, 0}
+
+            if wts.x > 0 and wts.y > 0 then
+                dx9.DrawCircle({wts.x, wts.y}, {0,0,0}, 3)
+                dx9.DrawCircle({wts.x, wts.y}, color, 1)
+                dx9.DrawString({wts.x + 5, wts.y - 13}, color, name.."\n["..dist.."m]")
             end
         end
     end
